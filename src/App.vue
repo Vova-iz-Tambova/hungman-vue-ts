@@ -11,11 +11,15 @@ const word = ref('василий')
 const letters = ref<string[]>([])
 const correctLetters = computed(() => letters.value.filter((x) => word.value.includes(x)))
 const wrongLetters = computed(() => letters.value.filter((x) => !word.value.includes(x)))
+const notification = ref<InstanceType<typeof GameNotification> | null>(null)
 
 window.addEventListener('keydown', ({ key }) => {
-  console.log('raw key', key)
+  if (letters.value.includes(key)) {
+    notification.value?.open()
+    setTimeout(() => notification.value?.close(), 2000)
+  }
+
   if (/[а-яА-ЯёЁ]/.test(key)) {
-    console.log('filtered key', key)
     letters.value.push(key.toLowerCase())
   }
 })
@@ -34,5 +38,5 @@ window.addEventListener('keydown', ({ key }) => {
   </div>
 
   <GamePopup v-if="false" />
-  <GameNotification />
+  <GameNotification ref="notification" />
 </template>
